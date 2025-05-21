@@ -39,8 +39,8 @@
   <div id="results"></div>
 
   <script>
-    const featureServiceUrl = 'YOUR_FEATURE_LAYER_URL_HERE';
-    const token = 'YOUR_API_TOKEN_HERE';
+    const featureServiceUrl = 'https://services7.arcgis.com/2QnOkWUxsp4IWuaT/arcgis/rest/services/SOKONI_CADASTRE_WFL1/FeatureServer';
+    const token = 'AAPTxy8BH1VEsoebNVZXo8HurDOX8MVyCb_dbn99eZGxwizKZdHxKriGoodAC-X1Tio6BtM0bNqcepyh1pm2JEnP2KpMyoiJvEJWpIseZuE3H6mzuYqo35u3EKAAgTEwkLAD_HWpEL4PZ9vxuZM46UJGf20IKVsa89aQ9HjeeAyPen43Bp7pr_epR9YcfsoaO1FxksPrp3I8fEGEsO3PhYDxiaEvytU0Xh_tN6jAQ-RlWMTtZlt6Fc20zZqNXEjZtEn2AT1_IUAjw0JB';
 
     const form = document.getElementById('queryForm');
     const resultsDiv = document.getElementById('results');
@@ -53,7 +53,7 @@
       try {
         const response = await arcgisRest.queryFeatures({
           url: featureServiceUrl,
-          where: `id_number = '${idNumber}'`,
+          where: `ID = '${idNumber}'`,
           outFields: ['*'],
           authentication: arcgisRest.ApiKeyManager.fromKey(token)
         });
