@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ID Lookup</title>
+  <script src="https://unpkg.com/@esri/arcgis-rest-request@4.0.2/dist/umd/request.umd.min.js"></script>
+  <script src="https://unpkg.com/@esri/arcgis-rest-feature-layer@4.0.2/dist/umd/feature-layer.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    #results {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Check Your Details</h2>
+  <form id="queryForm">
+    <label for="idNumber">Enter your ID Number:</label>
+    <input type="text" id="idNumber" required />
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="results"></div>
+
+  <script>
+    const featureServiceUrl = 'YOUR_FEATURE_LAYER_URL_HERE';
+    const token = 'YOUR_API_TOKEN_HERE';
+
+    const form = document.getElementById('queryForm');
+    const resultsDiv = document.getElementById('results');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const idNumber = document.getElementById('idNumber').value.trim();
+      resultsDiv.innerHTML = 'Loading...';
+
+      try {
+        const response = await arcgisRest.queryFeatures({
+          url: featureServiceUrl,
+          where: `id_number = '${idNumber}'`,
+          outFields: ['*'],
+          authentication: arcgisRest.ApiKeyManager.fromKey(token)
+        });
+
+        const features = response.features;
+
+        if (features.length === 0) {
+          resultsDiv.innerHTML = `<p>No record found for ID: <strong>${idNumber}</strong></p>`;
+        } else {
+          const attrs = features[0].attributes;
+          let table = `<table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>`;
+          for (const key in attrs) {
+            table += `<tr><td>${key}</td><td>${attrs[key]}</td></tr>`;
+          }
+          table += `</tbody></table>`;
+          resultsDiv.innerHTML = table;
+        }
+
+      } catch (err) {
+        console.error(err);
+        resultsDiv.innerHTML = 'An error occurred while querying the data.';
+      }
+    });
+  </script>
+</body>
+</html>
